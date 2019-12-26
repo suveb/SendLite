@@ -1,4 +1,6 @@
-package com.s.sendlite.ui.main
+@file:Suppress("DEPRECATION")
+
+package com.s.sendlite.ui
 
 import android.Manifest
 import android.app.Application
@@ -25,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.s.sendlite.R
 import com.s.sendlite.WifiDirectBroadcastReceiver
 import com.s.sendlite.socket.ReceiverThread
@@ -34,12 +37,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
 
 @Suppress("BlockingMethodInNonBlockingContext", "DEPRECATION")
-class MainFragment : Fragment() {
+class MainFragment : Fragment(),KodeinAware {
+    override val kodein by closestKodein()
+
+    private val viewModelFactory: MainModelFactory by instance()
+
+    private val viewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
+    }
 
     private val intentFilter = IntentFilter()
     private var broadcastReceiver = WifiDirectBroadcastReceiver()

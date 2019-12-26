@@ -1,8 +1,8 @@
-package com.s.sendlite
+package com.s.sendlite.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.s.sendlite.ui.main.MainFragment
+import com.s.sendlite.R
 
 class MainActivity : AppCompatActivity() {
 
