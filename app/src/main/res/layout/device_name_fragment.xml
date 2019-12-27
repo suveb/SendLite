@@ -5,9 +5,32 @@
     android:layout_height="match_parent"
     tools:context=".ui.DeviceNameFragment.DeviceNameFragment">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:orientation="vertical">
+
+        <TextView
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="DeviceName" />
+
+        <EditText
+            android:textSize="20sp"
+            android:id="@+id/edt_device_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Name"/>
+
+        <Button
+            android:id="@+id/btn_device_name"
+            android:textSize="20sp"
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="Change Name"/>
+
+    </LinearLayout>
 
 </FrameLayout>

@@ -1,16 +1,18 @@
 package com.s.sendlite.socket;
 
 import android.content.Context;
+import android.os.Environment;
 
 import androidx.lifecycle.MutableLiveData;
 
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.Socket;
-import java.util.Objects;
 
 public class ReceiverThread extends Thread {
+    private volatile boolean exit = false;
     private Context context;
     private Socket socket;
 
@@ -30,14 +32,18 @@ public class ReceiverThread extends Thread {
         FileOutputStream fos;
 
         String[] info;
-        String location = Objects.requireNonNull(context.getExternalFilesDir("")).getAbsolutePath();
+        String location = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SendLite/";
+        File root = new File(location);
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+        System.out.println("TAAAG location:"+ location);
         int temp;
         long amountReceived, fileSize;
         byte[] buffer = new byte[1024 * 64];
 
         int i = 0;
-        //noinspection InfiniteLoopStatement
-        while (true) {
+        while (!exit) {
             i++;
             amountReceived = 0;
             System.out.println("TAAAG REc:"+ i);
@@ -85,4 +91,9 @@ public class ReceiverThread extends Thread {
             }
         }
     }
+
+    public void stopThread(){
+        exit = true;
+    }
+
 }

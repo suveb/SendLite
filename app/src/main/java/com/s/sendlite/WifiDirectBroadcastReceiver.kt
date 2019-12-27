@@ -9,7 +9,9 @@ import android.net.wifi.p2p.WifiP2pDeviceList
 import android.net.wifi.p2p.WifiP2pManager
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import java.lang.reflect.Method
 import java.net.InetAddress
+
 
 @SuppressLint("SetTextI18n")
 class WifiDirectBroadcastReceiver : BroadcastReceiver() {
@@ -23,23 +25,37 @@ class WifiDirectBroadcastReceiver : BroadcastReceiver() {
     private val manager by lazy {
         context.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
     }
+
     private val channel by lazy {
-        manager.initialize(context, context.mainLooper) {
-            print("TAAAG channel disconnected")
-        }
+        manager.initialize(context, context.mainLooper, null)
+    }
+
+    fun changeName(deviceName: String) {
+        val paramTypes: Array<Class<*>?> = arrayOfNulls(3)
+        paramTypes[0] = WifiP2pManager.Channel::class.java
+        paramTypes[1] = String::class.java
+        paramTypes[2] = WifiP2pManager.ActionListener::class.java
+        val setDeviceName: Method = manager.javaClass.getMethod("setDeviceName", *paramTypes)
+        setDeviceName.isAccessible = true
+        setDeviceName.invoke(manager, channel, deviceName, object : WifiP2pManager.ActionListener {
+            override fun onSuccess() {
+                Toast.makeText(context, "changeName Success", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onFailure(reason: Int) {
+                Toast.makeText(context, "changeName Failure", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     fun discoverPeers() {
         manager.discoverPeers(channel, object : WifiP2pManager.ActionListener {
             override fun onSuccess() {
                 Toast.makeText(context, "discoverPeers Start Success", Toast.LENGTH_SHORT).show()
-                println("TAAAG discoverPeers Start Success")
             }
 
             override fun onFailure(p0: Int) {
-                Toast.makeText(context, "discoverPeers Start Failure $p0", Toast.LENGTH_SHORT)
-                    .show()
-                println("TAAAG discoverPeers Start Failure $p0")
+                Toast.makeText(context, "discoverPeers Start Failure", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -47,21 +63,16 @@ class WifiDirectBroadcastReceiver : BroadcastReceiver() {
     fun connectWith(config: WifiP2pConfig) {
         manager.connect(channel, config, object : WifiP2pManager.ActionListener {
             override fun onSuccess() {
-                Toast.makeText(context, "connection-request send successfully", Toast.LENGTH_SHORT)
-                    .show()
-                println("TAAAG connection-request send successfully")
+                Toast.makeText(context, "request send successfully", Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(p0: Int) {
-                Toast.makeText(context, "connection-request send failed $p0", Toast.LENGTH_SHORT)
-                    .show()
-                println("TAAAG connection-request send failed $p0")
+                Toast.makeText(context, "request send failed $p0", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     override fun onReceive(context: Context, intent: Intent?) {
-
         this.context = context
 
         when (intent?.action) {
@@ -80,7 +91,7 @@ class WifiDirectBroadcastReceiver : BroadcastReceiver() {
             WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION -> {
                 val state = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, -1)
                 if (state == WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED) {
-                    println("TAAAG DISCOVERY STARTED")
+                    println("TAAAG Discovery Started")
                 } else if (state == WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED) {
                     println("TAAAG Discovery Stopped")
                 }

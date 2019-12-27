@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_nav"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/availableDeviceFragment"
+        android:name="com.s.sendlite.ui.AvailableDeviceFragment.AvailableDeviceFragment"
+        android:label="available_device_fragment"
+        tools:layout="@layout/available_device_fragment">
+        <action
+            android:id="@+id/action_availableDeviceFragment_to_connectedFragment"
+            app:destination="@+id/connectedFragment"
+            app:popUpTo="@+id/dashboardFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/connectedFragment"
+        android:name="com.s.sendlite.ui.ConnectedFragment.ConnectedFragment"
+        android:label="connected_fragment"
+        tools:layout="@layout/connected_fragment" >
+        <argument android:name="hostAddress"
+            app:argType="string"
+            android:defaultValue="server" />
+    </fragment>
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.s.sendlite.ui.DashboardFragment.DashboardFragment"
+        android:label="dashboard_fragment"
+        tools:layout="@layout/dashboard_fragment">
+        <action
+            android:id="@+id/action_dashboardFragment_to_availableDeviceFragment"
+            app:destination="@id/availableDeviceFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_deviceNameFragment"
+            app:destination="@id/deviceNameFragment"
+            app:popUpTo="@+id/dashboardFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/deviceNameFragment"
+        android:name="com.s.sendlite.ui.DeviceNameFragment.DeviceNameFragment"
+        android:label="device_name_fragment"
+        tools:layout="@layout/device_name_fragment">
+        <action
+            android:id="@+id/action_deviceNameFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:popUpTo="@+id/settingsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_deviceNameFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@+id/deviceNameFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.s.sendlite.ui.HistoryFragment.HistoryFragment"
+        android:label="history_fragment"
+        tools:layout="@layout/history_fragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.s.sendlite.ui.SettingsFragment.SettingsFragment"
+        android:label="settings_fragment"
+        tools:layout="@layout/settings_fragment">
+        <action
+            android:id="@+id/action_settingsFragment_to_deviceNameFragment"
+            app:destination="@id/deviceNameFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <activity
+        android:id="@+id/splashActivity"
+        android:name="com.s.sendlite.ui.SplashActivity"
+        android:label="activity_splash"
+        tools:layout="@layout/activity_splash" />
+</navigation>

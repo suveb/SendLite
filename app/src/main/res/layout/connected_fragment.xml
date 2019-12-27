@@ -5,9 +5,35 @@
     android:layout_height="match_parent"
     tools:context=".ui.ConnectedFragment.ConnectedFragment">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_choose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="choose file" />
+
+        <TextView
+            android:id="@+id/bytes_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="File" />
+
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="File" />
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="send" />
+
+    </LinearLayout>
 
 </FrameLayout>

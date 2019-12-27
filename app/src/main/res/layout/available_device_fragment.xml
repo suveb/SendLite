@@ -5,9 +5,31 @@
     android:layout_height="match_parent"
     tools:context=".ui.AvailableDeviceFragment.AvailableDeviceFragment">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/connection_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Connection Status"
+            android:textAlignment="center"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="22sp" />
+
+        <Button
+            android:id="@+id/btn_discover"
+            android:text="Discover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <ListView
+            android:id="@+id/list_avail_devices"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#eee" />
+
+    </LinearLayout>
 </FrameLayout>

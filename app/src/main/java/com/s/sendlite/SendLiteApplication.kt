@@ -3,7 +3,12 @@ package com.s.sendlite
 import android.app.Application
 import com.s.sendlite.dataClass.LocalDatabase
 import com.s.sendlite.dataClass.Repository
-import com.s.sendlite.ui.MainModelFactory
+import com.s.sendlite.ui.AvailableDeviceFragment.AvailableDeviceModelFactory
+import com.s.sendlite.ui.ConnectedFragment.ConnectedModelFactory
+import com.s.sendlite.ui.DashboardFragment.DashboardModelFactory
+import com.s.sendlite.ui.DeviceNameFragment.DeviceNameModelFactory
+import com.s.sendlite.ui.HistoryFragment.HistoryModelFactory
+import com.s.sendlite.ui.SettingsFragment.SettingsModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -23,7 +28,16 @@ class SendLiteApplication : Application(), KodeinAware {
         //Repository
         bind() from singleton { Repository(instance()) }
 
+        //BroadcastReceiver
+        bind() from singleton { WifiDirectBroadcastReceiver() }
+
         //ViewModelFactory
-        bind() from provider { MainModelFactory(instance()) }
+        bind() from provider { AvailableDeviceModelFactory(instance()) }
+        bind() from provider { ConnectedModelFactory(instance()) }
+        bind() from provider { DashboardModelFactory(instance()) }
+        bind() from provider { DeviceNameModelFactory(instance()) }
+        bind() from provider { HistoryModelFactory(instance()) }
+        bind() from provider { SettingsModelFactory(instance()) }
+
     }
 }
