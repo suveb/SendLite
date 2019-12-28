@@ -25,6 +25,16 @@ public class ReceiverThread extends Thread {
         this.socket = socket;
     }
 
+    private static boolean isSpaceAvailable(long fileSize) {
+        long freeSpace = Environment.getExternalStorageDirectory().getFreeSpace();
+        System.out.println("TAAAG FreeSpace:" + freeSpace / 1024 / 1024);
+        return (freeSpace - fileSize) > 50 * 1024 * 1024;
+    }
+
+    public void stopThread() {
+        exit = true;
+    }
+
     @Override
     public void run() {
         InputStream is;
@@ -46,15 +56,15 @@ public class ReceiverThread extends Thread {
                 is = socket.getInputStream();
                 dis = new DataInputStream(is);
                 info = dis.readUTF().split(":");
-                location = getFilePath(info[1]);
+                size = Long.parseLong(info[0]);
+                fileSize = size;
+                location = getFilePath(info[1], size);
                 if (location.equals("false")) {
                     status.postValue("Storage Is Not Available");
                     continue;
                 }
                 System.out.println("TAAAG location:" + location);
                 fos = new FileOutputStream(location);
-                size = Long.parseLong(info[0]);
-                fileSize = size;
 
                 status.postValue("Receiving:" + info[1]);
                 bytesReceived.postValue(amountReceived);
@@ -95,12 +105,18 @@ public class ReceiverThread extends Thread {
         }
     }
 
-    public void stopThread() {
-        exit = true;
+    private static boolean isExternalStorageAvailable() {
+        String extStorageState = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(extStorageState);
     }
 
-    private String getFilePath(String fileName) {
-        if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
+    private static boolean isExternalStorageReadOnly() {
+        String extStorageState = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState);
+    }
+
+    private String getFilePath(String fileName, long fileSize) {
+        if (!isExternalStorageAvailable() || isExternalStorageReadOnly() || !isSpaceAvailable(fileSize)) {
             return "false";
         }
         String location = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SendLite/";
@@ -115,15 +131,5 @@ public class ReceiverThread extends Thread {
             rootFile = new File(location + i + ")" + fileName);
         }
         return rootFile.getAbsolutePath();
-    }
-
-    private static boolean isExternalStorageAvailable() {
-        String extStorageState = Environment.getExternalStorageState();
-        return Environment.MEDIA_MOUNTED.equals(extStorageState);
-    }
-
-    private static boolean isExternalStorageReadOnly() {
-        String extStorageState = Environment.getExternalStorageState();
-        return Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState);
     }
 }
