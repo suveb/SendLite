@@ -10,6 +10,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/connected_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Connected" />
+
         <Button
             android:id="@+id/btn_choose"
             android:layout_width="match_parent"
@@ -27,6 +33,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="File" />
+
+        <TextView
+            android:id="@+id/percentage_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="percentage" />
+
+        <TextView
+            android:id="@+id/size_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="size" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="0"
+            android:indeterminate="false" />
 
         <Button
             android:id="@+id/btn_send"

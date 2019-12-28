@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -47,6 +48,8 @@ class AvailableDeviceFragment : Fragment(), KodeinAware {
         val deviceArray = mutableListOf<WifiP2pDevice>()
         val config = WifiP2pConfig()
 
+        val sharedPref = activity?.getSharedPreferences("local", Context.MODE_PRIVATE)!!
+
         broadcastReceiver.deviceList.observe(this, Observer<WifiP2pDeviceList> {
             deviceNameArray.clear()
             deviceArray.clear()
@@ -71,18 +74,17 @@ class AvailableDeviceFragment : Fragment(), KodeinAware {
         })
 
         list_avail_devices.setOnItemClickListener { _, _, i, _ ->
-            config.apply { deviceAddress = deviceArray[i].deviceAddress }
-            broadcastReceiver.connectWith(config)
+            if (broadcastReceiver.connectWith(deviceArray[i]))
+                Toast.makeText(this.activity, "Connection Rejected", Toast.LENGTH_SHORT).show()
         }
 
         btn_discover.setOnClickListener {
             val wifiManager =
                 this.activity!!.application.getSystemService(Context.WIFI_SERVICE) as WifiManager
-            val sharedPref = activity?.getSharedPreferences("local", Context.MODE_PRIVATE)!!
             if (wifiManager.isWifiEnabled) {
                 broadcastReceiver.changeName(sharedPref.getString("DeviceName", "NoName")!!)
-                broadcastReceiver.discoverPeers()
             }
+                broadcastReceiver.discoverPeers()
         }
 
         enableWifi(this.activity!!.application)

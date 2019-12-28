@@ -19,6 +19,7 @@ public class SenderThread extends Thread {
     private Uri uri;
 
     public MutableLiveData<Long> byteSent = new MutableLiveData<>();
+    public long fileSize = 0L;
     public MutableLiveData<String> status = new MutableLiveData<>();
 
     public SenderThread(Context context, Socket socket, Uri uri) {
@@ -48,6 +49,7 @@ public class SenderThread extends Thread {
 
             String name = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
             String size = cursor.getString(cursor.getColumnIndex(OpenableColumns.SIZE));
+            fileSize = Long.parseLong(size);
             dos.writeUTF(size + ":" + name);
 
             status.postValue("Sending:" + name + ":" + size);

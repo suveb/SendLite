@@ -17,6 +17,7 @@ public class ReceiverThread extends Thread {
     private Socket socket;
 
     public MutableLiveData<Long> bytesReceived = new MutableLiveData<>();
+    public long fileSize = 0L;
     public MutableLiveData<String> status = new MutableLiveData<>();
 
     public ReceiverThread(Socket socket, Context context) {
@@ -26,50 +27,51 @@ public class ReceiverThread extends Thread {
 
     @Override
     public void run() {
-
         InputStream is;
         DataInputStream dis;
         FileOutputStream fos;
-
+        String location;
         String[] info;
-        String location = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SendLite/";
-        File root = new File(location);
-        if (!root.exists()) {
-            root.mkdirs();
-        }
-        System.out.println("TAAAG location:"+ location);
         int temp;
-        long amountReceived, fileSize;
+        long amountReceived, size;
         byte[] buffer = new byte[1024 * 64];
 
         int i = 0;
         while (!exit) {
             i++;
+            fileSize = 0L;
             amountReceived = 0;
-            System.out.println("TAAAG REc:"+ i);
+            System.out.println("TAAAG ReceiverThreadNo:" + i);
             try {
                 is = socket.getInputStream();
                 dis = new DataInputStream(is);
                 info = dis.readUTF().split(":");
-                fos = new FileOutputStream(location + info[1]);
-                fileSize = Long.parseLong(info[0]);
+                location = getFilePath(info[1]);
+                if (location.equals("false")) {
+                    status.postValue("Storage Is Not Available");
+                    continue;
+                }
+                System.out.println("TAAAG location:" + location);
+                fos = new FileOutputStream(location);
+                size = Long.parseLong(info[0]);
+                fileSize = size;
 
                 status.postValue("Receiving:" + info[1]);
                 bytesReceived.postValue(amountReceived);
 
                 long s = System.currentTimeMillis();
                 //Receiving Partial Data
-                temp = is.read(buffer, 0, (int) (fileSize % buffer.length));
+                temp = is.read(buffer, 0, (int) (size % buffer.length));
                 fos.write(buffer, 0, temp);
-                fileSize -= temp;
+                size -= temp;
                 amountReceived += temp;
                 bytesReceived.postValue(amountReceived);
 
                 //Receiving Remaining Data
-                while (fileSize > 0) {
+                while (size > 0) {
                     temp = is.read(buffer);
                     fos.write(buffer, 0, temp);
-                    fileSize -= temp;
+                    size -= temp;
                     amountReceived += temp;
                     bytesReceived.postValue(amountReceived);
                 }
@@ -88,12 +90,40 @@ public class ReceiverThread extends Thread {
                 fos.close();
             } catch (Exception e) {
                 e.printStackTrace();
+                stopThread();
             }
         }
     }
 
-    public void stopThread(){
+    public void stopThread() {
         exit = true;
     }
 
+    private String getFilePath(String fileName) {
+        if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
+            return "false";
+        }
+        String location = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SendLite/";
+        File root = new File(location);
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+        File rootFile = new File(location + fileName);
+        int i = 0;
+        while (rootFile.exists()) {
+            i++;
+            rootFile = new File(location + i + ")" + fileName);
+        }
+        return rootFile.getAbsolutePath();
+    }
+
+    private static boolean isExternalStorageAvailable() {
+        String extStorageState = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(extStorageState);
+    }
+
+    private static boolean isExternalStorageReadOnly() {
+        String extStorageState = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState);
+    }
 }

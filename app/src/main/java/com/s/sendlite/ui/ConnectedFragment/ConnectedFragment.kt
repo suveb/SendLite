@@ -1,5 +1,6 @@
 package com.s.sendlite.ui.ConnectedFragment
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -38,7 +39,7 @@ class ConnectedFragment : Fragment(), KodeinAware {
 
     private lateinit var socket: Socket
     private var fileURI: Uri? = null
-    private lateinit var receiver:ReceiverThread
+    private lateinit var receiver: ReceiverThread
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +51,17 @@ class ConnectedFragment : Fragment(), KodeinAware {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        val sharedPref = activity?.getSharedPreferences("local", Context.MODE_PRIVATE)!!
+
         CoroutineScope(Dispatchers.IO).launch {
+
+            withContext(Dispatchers.Main) {
+                connected_text.text = sharedPref.getString(
+                    "DeviceName",
+                    "NoName"
+                ) + "--" + sharedPref.getString("ConnectedTo", "None")
+            }
+
             if (args.hostAddress == "server") {
                 server()
             } else {
@@ -97,10 +108,19 @@ class ConnectedFragment : Fragment(), KodeinAware {
         receiver.start()
         receiver.bytesReceived.observe(this, Observer {
             bytes_text.text = it.toString()
+            size_text.text = viewModel.sizeReceived(it)
+            if (receiver.fileSize != 0L) {
+                viewModel.calculatePercentage(receiver.fileSize, it).run {
+                    percentage_text.text = this.toString()
+                    progress_bar.progress = this
+                }
+            }
         })
 
         receiver.status.observe(this, Observer {
             status_text.text = it
+            if(it.contains("Complete"))
+                progress_bar.progress = 100
         })
     }
 
@@ -113,10 +133,19 @@ class ConnectedFragment : Fragment(), KodeinAware {
         senderThread.start()
         senderThread.byteSent.observe(this, Observer {
             bytes_text.text = it.toString()
+            size_text.text = viewModel.sizeReceived(it)
+            if (senderThread.fileSize != 0L) {
+                viewModel.calculatePercentage(senderThread.fileSize, it).run {
+                    percentage_text.text = this.toString()
+                    progress_bar.progress = this
+                }
+            }
         })
 
         senderThread.status.observe(this, Observer {
             status_text.text = it
+            if(it.contains("Complete"))
+                progress_bar.progress = 100
         })
     }
 

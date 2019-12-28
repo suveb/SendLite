@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.wifi.p2p.WifiP2pConfig
+import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pDeviceList
 import android.net.wifi.p2p.WifiP2pManager
 import android.widget.Toast
@@ -39,14 +40,16 @@ class WifiDirectBroadcastReceiver : BroadcastReceiver() {
         setDeviceName.isAccessible = true
         setDeviceName.invoke(manager, channel, deviceName, object : WifiP2pManager.ActionListener {
             override fun onSuccess() {
-                Toast.makeText(context, "changeName Success", Toast.LENGTH_SHORT).show()
+                print("TAAAG changeName Success")
             }
 
             override fun onFailure(reason: Int) {
-                Toast.makeText(context, "changeName Failure", Toast.LENGTH_SHORT).show()
+                print("TAAAG changeName Failure")
             }
         })
     }
+
+    fun getConnectionInfo(){}
 
     fun discoverPeers() {
         manager.discoverPeers(channel, object : WifiP2pManager.ActionListener {
@@ -60,16 +63,22 @@ class WifiDirectBroadcastReceiver : BroadcastReceiver() {
         })
     }
 
-    fun connectWith(config: WifiP2pConfig) {
+    fun connectWith(device: WifiP2pDevice): Boolean {
+        val config = WifiP2pConfig().apply { deviceAddress = device.deviceAddress }
+        var status = false
         manager.connect(channel, config, object : WifiP2pManager.ActionListener {
             override fun onSuccess() {
+                status = true
                 Toast.makeText(context, "request send successfully", Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(p0: Int) {
+                status = false
                 Toast.makeText(context, "request send failed $p0", Toast.LENGTH_SHORT).show()
             }
         })
+
+        return status
     }
 
     override fun onReceive(context: Context, intent: Intent?) {
@@ -108,7 +117,6 @@ class WifiDirectBroadcastReceiver : BroadcastReceiver() {
             //Triggered after we connect to a device
             WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> {
                 manager.requestConnectionInfo(channel) {
-                    //val groupOwnerAddress = it.groupOwnerAddress
                     if (it.groupFormed && it.isGroupOwner) {
                         member.postValue("GroupOwner")
                     } else if (it.groupFormed) {
