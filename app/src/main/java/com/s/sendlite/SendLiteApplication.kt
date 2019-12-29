@@ -29,7 +29,8 @@ class SendLiteApplication : Application(), KodeinAware {
         bind() from singleton { Repository(instance()) }
 
         //BroadcastReceiver
-        bind() from singleton { WifiDirectBroadcastReceiver() }
+        //bind() from singleton { WifiDirectBroadcastReceiver() }
+        bind() from singleton { WifiDirectMethodsImpl(instance()) }
 
         //ViewModelFactory
         bind() from provider { AvailableDeviceModelFactory(instance()) }
@@ -38,6 +39,5 @@ class SendLiteApplication : Application(), KodeinAware {
         bind() from provider { DeviceNameModelFactory(instance()) }
         bind() from provider { HistoryModelFactory(instance()) }
         bind() from provider { SettingsModelFactory(instance()) }
-
     }
 }

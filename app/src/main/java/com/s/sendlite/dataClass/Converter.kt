@@ -7,11 +7,11 @@ class Converter {
     companion object{
         @TypeConverter
         @JvmStatic
-        fun fromTimeStamp(value: Long) = Date(value)
+        fun fromTimeStamp(value: Long?) = value?.let { Date(it) }
 
         @TypeConverter
         @JvmStatic
-        fun toTimeStamp(date: Date) = date.time
+        fun toTimeStamp(date: Date?) = date?.time
     }
 }
 

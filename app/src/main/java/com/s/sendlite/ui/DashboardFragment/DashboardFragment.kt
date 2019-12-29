@@ -1,8 +1,6 @@
 package com.s.sendlite.ui.DashboardFragment
 
-import android.app.Application
 import android.content.Context
-import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-
 import com.s.sendlite.R
+import com.s.sendlite.WifiDirectMethodsImpl
 import kotlinx.android.synthetic.main.dashboard_fragment.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -19,7 +17,7 @@ import org.kodein.di.generic.instance
 
 class DashboardFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
-
+    private val broadcastReceiver: WifiDirectMethodsImpl by instance()
     private val viewModelFactory: DashboardModelFactory by instance()
 
     private val viewModel by lazy {
@@ -44,13 +42,11 @@ class DashboardFragment : Fragment(), KodeinAware {
                 findNavController().navigate(R.id.action_dashboardFragment_to_availableDeviceFragment)
         }
 
-        disableWifi(this.activity!!.application)
-    }
+//        var i = 0
+//        btn_ins.setOnClickListener {
+//            viewModel.insertValue("Test"+(++i).toString())
+//        }
 
-    private fun disableWifi(application: Application) {
-        val wifiManager = application.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        if (wifiManager.isWifiEnabled) {
-            wifiManager.isWifiEnabled = false
-        }
+        broadcastReceiver.turnWifiOff()
     }
 }

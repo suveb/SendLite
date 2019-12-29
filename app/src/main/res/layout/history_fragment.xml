@@ -16,13 +16,18 @@
             android:layout_height="wrap_content"
             android:text="History" />
 
+        <TextView
+            android:id="@+id/txv_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/btn_next"
             android:textSize="20sp"
             android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:text="next"/>
+            android:text="Show" />
 
     </LinearLayout>
 

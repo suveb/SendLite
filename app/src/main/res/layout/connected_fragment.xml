@@ -11,6 +11,15 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/connection_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Connection Status"
+            android:textAlignment="center"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="22sp" />
+
+        <TextView
             android:id="@+id/connected_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -10,12 +10,12 @@ import java.util.*
 @Entity
 @Keep
 data class History(
-    @NonNull val fileName: String,
-    @NonNull val fileSize: String,
-    @NonNull @ColumnInfo(defaultValue = "Others") val fileType: String,
-    @NonNull val fileLocation: String,
-    @NonNull val status: String,
-    @NonNull val senderName: String,
-    @NonNull val receiverName: String,
-    @PrimaryKey @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP") val dateReceived: Date
+    @NonNull var fileName: String = "",
+    @NonNull var fileSize: String = "",
+    @NonNull @ColumnInfo(defaultValue = "Others") var fileType: String = "",
+    @NonNull var fileLocation: String = "",
+    @NonNull var status: String = "",
+    @NonNull var senderName: String = "",
+    @NonNull var receiverName: String = "",
+    @PrimaryKey @ColumnInfo(defaultValue = "CURRENT_TIMESTAMP") var dateReceived: Date? = null
 )

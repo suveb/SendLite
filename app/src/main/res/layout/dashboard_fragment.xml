@@ -24,6 +24,15 @@
             android:layout_height="20dp"
             android:text="next"/>
 
+        <!--        <Button-->
+        <!--            android:layout_marginTop="20dp"-->
+        <!--            android:id="@+id/btn_ins"-->
+        <!--            android:textSize="20sp"-->
+        <!--            android:background="@color/colorPrimary"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="20dp"-->
+        <!--            android:text="insert"/>-->
+
     </LinearLayout>
 
 </FrameLayout>

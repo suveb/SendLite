@@ -10,7 +10,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.s.sendlite.R
-import com.s.sendlite.WifiDirectBroadcastReceiver
+import com.s.sendlite.WifiDirectMethodsImpl
 import kotlinx.android.synthetic.main.activity_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -18,9 +18,8 @@ import org.kodein.di.generic.instance
 
 
 class MainActivity : AppCompatActivity(), KodeinAware {
-
     override val kodein by closestKodein()
-    private val broadcastReceiver: WifiDirectBroadcastReceiver by instance()
+    private val broadcastReceiver: WifiDirectMethodsImpl by instance()
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val intentFilter = IntentFilter().apply {
@@ -50,6 +49,7 @@ class MainActivity : AppCompatActivity(), KodeinAware {
 
     override fun onDestroy() {
         super.onDestroy()
+        broadcastReceiver.turnWifiOff()
         unregisterReceiver(broadcastReceiver)
     }
 }
