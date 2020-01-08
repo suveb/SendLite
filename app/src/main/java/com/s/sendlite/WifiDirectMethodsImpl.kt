@@ -9,11 +9,14 @@ import android.net.wifi.p2p.WifiP2pDeviceList
 import android.net.wifi.p2p.WifiP2pManager
 import androidx.lifecycle.MutableLiveData
 
-class WifiDirectMethodsImpl(val application: Application) : WifiDirectMethods, BroadcastReceiver() {
+class WifiDirectMethodsImpl(private val application: Application) : WifiDirectMethods,
+    BroadcastReceiver() {
 
+    val wifiStatus = MutableLiveData<Boolean>(false)
+    val discoverPeerStatus = MutableLiveData<Boolean>(false)
     val availableDeviceList = MutableLiveData<WifiP2pDeviceList>()
     val hostAddress = MutableLiveData<String>()
-    val memberType = MutableLiveData<String>()
+    val memberType = MutableLiveData<String>("none")
 
     private val manager = application.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
     private val channel = manager.initialize(application, application.mainLooper, null)
@@ -30,6 +33,8 @@ class WifiDirectMethodsImpl(val application: Application) : WifiDirectMethods, B
         super.IstartDiscoverPeer(application, manager, channel)
     }
 
+    fun hotspotState() = IhotspotState(manager)
+
     fun connectTo(device: WifiP2pDevice) {
         super.IconnectTo(device, application, manager, channel)
     }
@@ -45,8 +50,10 @@ class WifiDirectMethodsImpl(val application: Application) : WifiDirectMethods, B
             WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION -> {
                 val state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1)
                 if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
+                    wifiStatus.postValue(true)
                     println("TAAAG wifi is on")
                 } else {
+                    wifiStatus.postValue(false)
                     println("TAAAG wifi is off")
                 }
             }
@@ -55,8 +62,10 @@ class WifiDirectMethodsImpl(val application: Application) : WifiDirectMethods, B
             WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION -> {
                 val state = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, -1)
                 if (state == WifiP2pManager.WIFI_P2P_DISCOVERY_STARTED) {
+                    discoverPeerStatus.postValue(true)
                     println("TAAAG Discovery Started")
                 } else if (state == WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED) {
+                    discoverPeerStatus.postValue(false)
                     println("TAAAG Discovery Stopped")
                 }
             }
@@ -71,6 +80,7 @@ class WifiDirectMethodsImpl(val application: Application) : WifiDirectMethods, B
 
             //Triggered after we connect to a device
             WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> {
+                println("TAAAG ConnectionChanged Completed")
                 manager.requestConnectionInfo(channel) {
                     if (it.groupFormed && it.isGroupOwner) {
                         memberType.postValue("Server")

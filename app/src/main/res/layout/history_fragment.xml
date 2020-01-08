@@ -29,6 +29,12 @@
             android:layout_height="20dp"
             android:text="Show" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rec_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp" />
+
     </LinearLayout>
 
 </FrameLayout>

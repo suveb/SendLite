@@ -43,6 +43,17 @@ interface WifiDirectMethods {
         })
     }
 
+    fun IhotspotState(manager: WifiP2pManager): Boolean {
+        try {
+            val method = manager.javaClass.getDeclaredMethod("isWifiApEnabled")
+            method.isAccessible = true
+            return method.invoke(manager) as Boolean
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return false
+    }
+
     fun IconnectTo(
         device: WifiP2pDevice,
         application: Application,
@@ -70,11 +81,11 @@ interface WifiDirectMethods {
         setDeviceName.isAccessible = true
         setDeviceName.invoke(manager, channel, name, object : WifiP2pManager.ActionListener {
             override fun onSuccess() {
-                print("TAAAG changeName Success")
+                println("TAAAG changeName Success")
             }
 
             override fun onFailure(reason: Int) {
-                print("TAAAG changeName Failure")
+                println("TAAAG changeName Failure")
             }
         })
     }

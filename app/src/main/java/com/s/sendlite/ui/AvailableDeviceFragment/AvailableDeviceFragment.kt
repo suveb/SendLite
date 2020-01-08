@@ -60,11 +60,7 @@ class AvailableDeviceFragment : Fragment(), KodeinAware {
                 findNavController().navigate(R.id.action_availableDeviceFragment_to_connectedFragment)
         })
 
-        list_avail_devices.setOnItemClickListener { _, _, i, _ ->
-            broadcastReceiver.connectTo(deviceArray[i])
-        }
-
-        btn_discover.setOnClickListener {
+        btn_wifi.setOnClickListener {
             val wifiManager =
                 this.activity!!.application.getSystemService(Context.WIFI_SERVICE) as WifiManager
             if (wifiManager.isWifiEnabled) {
@@ -73,6 +69,36 @@ class AvailableDeviceFragment : Fragment(), KodeinAware {
             } else {
                 Toast.makeText(this.context, "Please Turn Wifi On", Toast.LENGTH_SHORT).show()
             }
+        }
+
+//        broadcastReceiver.wifiStatus.observe(this, Observer {
+//            if (it) {
+//                if (!broadcastReceiver.discoverPeerStatus.value!!) {
+//                    broadcastReceiver.changeDeviceName(
+//                        sharedPref.getString(
+//                            "DeviceName",
+//                            "NoName"
+//                        )!!
+//                    )
+//                    broadcastReceiver.startDiscoverPeer()
+//                    btn_wifi.apply {
+//                        isEnabled = false
+//                        alpha = 0.5F
+//                    }
+//                }
+//            } else
+//                btn_wifi.apply {
+//                    isEnabled = true
+//                    alpha = 1F
+//                }
+//        })
+//
+//        btn_wifi.setOnClickListener {
+//            broadcastReceiver.turnWifiOn()
+//        }
+
+        list_avail_devices.setOnItemClickListener { _, _, i, _ ->
+            broadcastReceiver.connectTo(deviceArray[i])
         }
 
         broadcastReceiver.turnWifiOn()

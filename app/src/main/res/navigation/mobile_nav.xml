@@ -21,9 +21,11 @@
         android:name="com.s.sendlite.ui.ConnectedFragment.ConnectedFragment"
         android:label="connected_fragment"
         tools:layout="@layout/connected_fragment" >
-        <argument android:name="hostAddress"
-            app:argType="string"
-            android:defaultValue="server" />
+        <action
+            android:id="@+id/action_connectedFragment_to_availableDeviceFragment"
+            app:destination="@id/availableDeviceFragment"
+            app:popUpTo="@+id/availableDeviceFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/dashboardFragment"

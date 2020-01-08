@@ -1,5 +1,6 @@
 package com.s.sendlite.ui.ConnectedFragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -36,14 +37,10 @@ class ConnectedFragment : Fragment(), KodeinAware {
         return inflater.inflate(R.layout.connected_fragment, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         val sharedPref = activity?.getSharedPreferences("local", Context.MODE_PRIVATE)!!
-
-        viewModel.peerName.observe(this, Observer {
-            connection_status.text = sharedPref.getString("DeviceName", "")!! + it
-        })
 
         viewModel.initialise(
             broadcastReceiver.memberType.value!!,
@@ -51,24 +48,53 @@ class ConnectedFragment : Fragment(), KodeinAware {
             sharedPref.getString("DeviceName", "")!!
         )
 
+        viewModel.peerName.observe(this, Observer {
+            connection_status.text = sharedPref.getString("DeviceName", "")!! + "--" + it
+        })
+
+        viewModel.socketStatus.observe(this, Observer {
+            txv_socket.text = it
+        })
+
+        viewModel.status.observe(this, Observer {
+            txv_status.text = it
+            if (it.contains("Complete")) {
+                txv_percent.text = "100"
+                progress_bar.progress = 100
+            }
+        })
+
+        viewModel.fileSize.observe(this, Observer {
+            txv_filesize.text = it.toString()
+        })
+
         viewModel.bytes.observe(this, Observer {
-            bytes_text.text = it.toString()
-            size_text.text = viewModel.sizeReceived(it)
-            if (viewModel.fileSize != 0L) {
-                viewModel.calculatePercentage(viewModel.fileSize, it).run {
-                    percentage_text.text = this.toString()
+            txv_bytes.text = it.toString()
+            txv_size.text = viewModel.sizeInWord(it)
+            if (viewModel.fileSize.value != 0L) {
+                viewModel.calculatePercentage(viewModel.fileSize.value!!, it).run {
+                    txv_percent.text = this.toString()
                     progress_bar.progress = this
                 }
             }
         })
 
-        viewModel.status.observe(this, Observer {
-            status_text.text = it
-            if (it.contains("Complete")) {
-                percentage_text.text = "100"
-                progress_bar.progress = 100
+        viewModel.elapsedTime.observe(this, Observer {
+            viewModel.calculateAverageSpeed(it, viewModel.bytes.value!!).run {
+                txv_speed.text = viewModel.sizeInWord(this) + "/s"
+                txv_time.text = viewModel.timeInWords(
+                    viewModel.remainingTime(
+                        it,
+                        viewModel.fileSize.value!!,
+                        this
+                    )
+                )
             }
         })
+
+        btn_status.setOnClickListener {
+            viewModel.isConnected()
+        }
 
         btn_send.setOnClickListener {
             if (fileURI != null) {
@@ -86,6 +112,7 @@ class ConnectedFragment : Fragment(), KodeinAware {
 
     override fun onDestroy() {
         super.onDestroy()
+        viewModel.closeSocket()
         viewModel.stopReceiver()
         broadcastReceiver.turnWifiOff()
     }
@@ -103,4 +130,6 @@ class ConnectedFragment : Fragment(), KodeinAware {
             fileURI = data?.data!!
         }
     }
+
+
 }

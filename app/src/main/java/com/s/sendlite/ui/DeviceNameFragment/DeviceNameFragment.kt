@@ -35,7 +35,6 @@ class DeviceNameFragment : Fragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
 
         val sharedPref = activity?.getSharedPreferences("local", Context.MODE_PRIVATE)!!
-
         edt_device_name.setText(sharedPref.getString("DeviceName", ""))
 
         btn_device_name.setOnClickListener {

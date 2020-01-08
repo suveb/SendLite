@@ -3,6 +3,11 @@ package com.s.sendlite
 import android.app.Application
 import com.s.sendlite.dataClass.LocalDatabase
 import com.s.sendlite.dataClass.Repository
+import com.s.sendlite.fileManager.AppsFragment.AppsModelFactory
+import com.s.sendlite.fileManager.FilesFragment.FilesModelFactory
+import com.s.sendlite.fileManager.MusicFragment.MusicModelFactory
+import com.s.sendlite.fileManager.PhotosFragment.PhotosModelFactory
+import com.s.sendlite.fileManager.VideosFragment.VideosModelFactory
 import com.s.sendlite.ui.AvailableDeviceFragment.AvailableDeviceModelFactory
 import com.s.sendlite.ui.ConnectedFragment.ConnectedModelFactory
 import com.s.sendlite.ui.DashboardFragment.DashboardModelFactory
@@ -39,5 +44,11 @@ class SendLiteApplication : Application(), KodeinAware {
         bind() from provider { DeviceNameModelFactory(instance()) }
         bind() from provider { HistoryModelFactory(instance()) }
         bind() from provider { SettingsModelFactory(instance()) }
+
+        bind() from provider { AppsModelFactory(instance()) }
+        bind() from provider { FilesModelFactory(instance()) }
+        bind() from provider { MusicModelFactory(instance()) }
+        bind() from provider { PhotosModelFactory(instance()) }
+        bind() from provider { VideosModelFactory(instance()) }
     }
 }

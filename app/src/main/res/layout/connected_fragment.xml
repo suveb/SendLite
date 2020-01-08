@@ -20,10 +20,17 @@
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/connected_text"
+            android:id="@+id/txv_socket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Connected" />
+            android:text="Socket" />
+
+
+        <Button
+            android:id="@+id/btn_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Status" />
 
         <Button
             android:id="@+id/btn_choose"
@@ -32,44 +39,61 @@
             android:text="choose file" />
 
         <TextView
-            android:id="@+id/bytes_text"
+            android:id="@+id/txv_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="File" />
+            android:text="Status" />
 
         <TextView
-            android:id="@+id/status_text"
+            android:id="@+id/txv_filesize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="File" />
+            android:text="FileSize" />
 
         <TextView
-            android:id="@+id/percentage_text"
+            android:id="@+id/txv_bytes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="percentage" />
+            android:text="Bytes" />
 
         <TextView
-            android:id="@+id/size_text"
+            android:id="@+id/txv_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="size" />
+            android:text="MBs" />
+
+        <TextView
+            android:id="@+id/txv_percent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Percentage" />
 
         <ProgressBar
             android:id="@+id/progress_bar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:indeterminate="false"
             android:max="100"
-            android:progress="0"
-            android:indeterminate="false" />
+            android:progress="0" />
+
+        <TextView
+            android:id="@+id/txv_speed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Speed" />
+
+        <TextView
+            android:id="@+id/txv_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Time" />
 
         <Button
             android:id="@+id/btn_send"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="send" />
-
     </LinearLayout>
 
 </FrameLayout>
